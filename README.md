@@ -8,7 +8,7 @@ One of the goals of `slipnaut` is to be nearly as concise as `NetworkX`. To achi
 Here is an example comparing `NetworkX` to `slipnaut`. Both examples traverse all Kempe chains in a graph.
 
 <table>
-<tr><th>slipnaut</th><th>NetworkX</th></tr>
+<tr><th>slipnaut</th></tr>
 <tr><td>
 
 ```rust
@@ -33,7 +33,9 @@ fn main() {
 }
 ```
 
-</td><td>
+</td></tr>
+<tr><th>NetworkX</th></tr>
+<tr><td>
 
 ```python
 n = 50
