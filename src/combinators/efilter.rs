@@ -1,7 +1,9 @@
+use std::iter::FusedIterator;
 use std::marker::PhantomData;
 
 use crate::Graph;
 
+#[derive(Debug, Clone)]
 pub struct EdgeFilter<'b, V, F, AI: Iterator<Item = V>>
 where
     F: Fn(&V, &V) -> bool,
@@ -20,6 +22,22 @@ impl<'b, V, F: Fn(&V, &V) -> bool, AI: Iterator<Item = V>> Iterator for EdgeFilt
             .filter(|u| (self.predicate)(&self.v, u))
             .next()
     }
+}
+
+impl<'b, V, F: Fn(&V, &V) -> bool, AI: DoubleEndedIterator<Item = V>> DoubleEndedIterator
+    for EdgeFilter<'b, V, F, AI>
+{
+    fn next_back(&mut self) -> Option<Self::Item> {
+        self.inner
+            .by_ref()
+            .filter(|u| (self.predicate)(&self.v, u))
+            .next_back()
+    }
+}
+
+impl<'b, V, F: Fn(&V, &V) -> bool, AI: FusedIterator<Item = V>> FusedIterator
+    for EdgeFilter<'b, V, F, AI>
+{
 }
 
 pub struct EFilter<'a, V, G, F>

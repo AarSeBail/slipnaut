@@ -5,7 +5,7 @@ use rustc_hash::FxHashSet;
 
 use crate::Graph;
 
-pub fn dfs<'a, V: Hash + Copy + Eq, G: Graph<'a, V>>(
+pub fn dfs_preorder<'a, V: Hash + Copy + Eq, G: Graph<'a, V, AI: DoubleEndedIterator>>(
     g: &'a G,
     root: Option<V>,
 ) -> impl Iterator<Item = V> {
@@ -16,6 +16,7 @@ pub fn dfs<'a, V: Hash + Copy + Eq, G: Graph<'a, V>>(
         stack.push(r);
     } else {
         stack.extend(g.verts());
+        stack.reverse();
     }
 
     (0..)
@@ -27,7 +28,7 @@ pub fn dfs<'a, V: Hash + Copy + Eq, G: Graph<'a, V>>(
                     continue;
                 }
                 visited.insert(p);
-                stack.extend(g.adj(p).unwrap().filter(|x| !visited.contains(x)));
+                stack.extend(g.adj(p).unwrap().rev().filter(|x| !visited.contains(x)));
                 return Some(p);
             }
             None

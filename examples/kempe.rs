@@ -1,25 +1,26 @@
-use rand::{Rng, rng};
 use slipnaut::Graph;
-use slipnaut::traversal::dfs;
+use slipnaut::traversal::dfs_preorder;
 
 fn main() {
-    let n = 50usize;
+    let n = 50;
+    let k = 5;
+    
     let verts = || 0..n;
-    let adj = |k| verts().filter(move |&x| (x + k) % 4 == 1);
+    let adj = |v| verts().filter(move |&u| (u + v) & 1 == 1);
 
     let graph = (verts, adj);
-    let mut coloring: Vec<_> = (0..n).map(|_| rng().random_range(0..3)).collect();
-    coloring[0] = 0;
-
-    let colors = [0, 1];
+    let coloring: Vec<_> = (0..n).map(|i| i % k).collect();
 
     // Filter out improperly colored edges
     let proper = graph.efilter(|&u, &v| coloring[u] != coloring[v]);
-    // Filter out 2-colored vertices
-    let chain = proper.vfilter(|&x| colors.contains(&coloring[x]));
 
-    // Traverse 0/1 Kempe chain starting at 0
-    for v in dfs(&chain, Some(0)) {
-        println!("{v}");
+    for a in 1..k {
+        for b in 0..a {
+            // Filter out 2-colored vertices
+            let chain = proper.vfilter(|&x| [a, b].contains(&coloring[x]));
+
+            // Traverse the Kempe chains
+            println!("{:?}", dfs_preorder(&chain, None).collect::<Vec<_>>());
+        }
     }
 }
