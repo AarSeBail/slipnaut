@@ -18,8 +18,8 @@ fn main() {
     
     let verts = || 0..n;
     let adj = |v| verts().filter(move |&u| (u + v) & 1 == 1);
-
     let graph = (verts, adj);
+
     let coloring: Vec<_> = (0..n).map(|i| i % k).collect();
 
     let proper = graph.efilter(|&u, &v| coloring[u] != coloring[v]);
@@ -49,6 +49,7 @@ graph.add_edges_from(filter(
 ))
 
 coloring = [i % k for i in range(n)]
+
 proper = graph.edge_subgraph(filter(
     lambda e: coloring[e[0]] != coloring[e[1]], 
     graph.edges()
